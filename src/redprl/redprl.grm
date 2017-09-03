@@ -919,7 +919,9 @@ multitac : rawMultitac (annotate (Pos.pos (rawMultitac1left fileName) (rawMultit
 
 hypBinding
   : VARNAME COLON psort (VARNAME, psort)
+  | UNDER COLON psort ("_", psort)
   | VARNAME (VARNAME, P.HYP)
+  | UNDER ("_", P.HYP)
 
 hypBindings
   : hypBinding ([hypBinding])
