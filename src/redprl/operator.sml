@@ -177,6 +177,8 @@ struct
    | RECORD of string list | TUPLE of string list | PROJ of string | TUPLE_UPDATE of string
    (* path: path abstraction and application *)
    | PATH_TY | PATH_ABS | PATH_APP
+   (* pushout *)
+   | PUSHOUT | LEFT | RIGHT | GLUE
    (* equality *)
    | EQUALITY
    (* universe *)
@@ -319,6 +321,11 @@ struct
      | PATH_ABS => [[DIM] |: EXP] ->> EXP
      | PATH_APP => [[] |: EXP, [] |: DIM] ->> EXP
 
+     | PUSHOUT => [[] |: EXP, [] |: EXP, [] |: EXP, [EXP] |: EXP, [EXP] |: EXP] ->> EXP
+     | LEFT => [[] |: EXP] ->> EXP
+     | RIGHT => [[] |: EXP] ->> EXP
+     | GLUE => [[EXP] |: EXP, [EXP] |: EXP, [] |: DIM, [] |: EXP] ->> EXP
+
      | FCOM => [[] |: DIM, [] |: DIM, [] |: EXP, [] |: VEC TUBE] ->> EXP
      | BOX => [[] |: DIM, [] |: DIM, [] |: EXP, [] |: VEC BDRY] ->> EXP
      | CAP => [[] |: DIM, [] |: DIM, [] |: EXP, [] |: VEC TUBE] ->> EXP
@@ -460,6 +467,11 @@ struct
      | PATH_TY => "path"
      | PATH_ABS => "abs"
      | PATH_APP => "path-app"
+
+     | PUSHOUT => "pushout"
+     | LEFT => "left"
+     | RIGHT => "right"
+     | GLUE => "glue"
 
      | UNIVERSE => "U"
      | V => "V"
