@@ -58,6 +58,10 @@ struct
    | TUPLE of (label * 'a) list | PROJ of string * 'a | TUPLE_UPDATE of (string * 'a) * 'a
    (* path: path abstraction and path application *)
    | PATH_TY of (variable * 'a) * 'a * 'a | PATH_ABS of variable * 'a | PATH_APP of 'a * 'a
+   (* pushouts *)
+   | PUSHOUT of 'a * 'a * 'a * (variable * 'a) * (variable * 'a)
+   | LEFT of 'a | RIGHT of 'a
+   | GLUE of 'a * 'a * 'a * 'a
    (* equality *)
    | EQUALITY of 'a * 'a * 'a
    (* fcom types *)
@@ -315,6 +319,12 @@ struct
        | PATH_ABS (u, m) => O.PATH_ABS $$ [[u] \ m]
        | PATH_APP (m, r) => O.PATH_APP $$ [[] \ m, [] \ r]
 
+       | PUSHOUT (a, b, c, (x, fx), (y, gy)) =>
+           O.PUSHOUT $$ [[] \ a, [] \ b, [] \ c, [x] \ fx, [y] \ gy]
+       | LEFT m => O.LEFT $$ [[] \ m]
+       | RIGHT m => O.RIGHT $$ [[] \ m]
+       | GLUE (r, m, fm, gm) => O.GLUE $$ [[] \ r, [] \ m, [] \ fm, [] \ gm]
+
        | EQUALITY (a, m, n) => O.EQUALITY $$ [[] \ a, [] \ m, [] \ n]
 
        | BOX args => intoBox args
@@ -401,6 +411,12 @@ struct
        | O.PATH_TY $ [[u] \ a, _ \ m, _ \ n] => PATH_TY ((u, a), m, n)
        | O.PATH_ABS $ [[u] \ m] => PATH_ABS (u, m)
        | O.PATH_APP $ [_ \ m, _ \ r] => PATH_APP (m, r)
+
+       | O.PUSHOUT $ [_ \ a, _ \ b, _ \ c, [x] \ fx, [y] \ gy] =>
+           PUSHOUT (a, b, c, (x, fx), (y, gy))
+       | O.LEFT $ [_ \ m] => LEFT m
+       | O.RIGHT $ [_ \ m] => RIGHT m
+       | O.GLUE $ [_ \ r, _ \ m, _ \ fm, _ \ gm] => GLUE (r, m, fm, gm)
 
        | O.EQUALITY $ [_ \ a, _ \ m, _ \ n] => EQUALITY (a, m, n)
 
